@@ -1,0 +1,88 @@
+{% extends "todoApp/layout.html" %}
+
+{% block body %}
+    {% if not existing_days %}
+
+        <div class="alert alert-warning" role="alert" style="text-align: center;">
+            Oops, {{ request.user }}! Looks like you've never used this app in that month. Try another one!
+        </div>
+        <br>
+        <form method="POST" class="form-progress" action="{% url 'progress' %}">
+            {% csrf_token %}
+            Check Another Month!
+            <br>
+            <input class="input-class" type="number" name="month" placeholder="Month" required min="1" max="12">
+            <br>
+            <input class="input-class" type="number" name="year" required placeholder="Year" min="2022">
+            <br>
+            <input class="btn btn btn-outline-light" type="submit" value="Check" style="width: 275px">    
+            <br>        
+        </form>
+    {% else %}
+        <h3 style="text-align: center">Hello, {{ request.user }}! Here's how you've been doing this month!</h3>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                <div class="row">
+                    <div class="col-lg-4 col-mid-4 col-sm-4 col-4">
+                        <h4>Days</h4>
+                        <hr style="border-top: 0.01px solid rgb(119, 119, 119);">
+                        {% for day in existing_days %}
+                            {{ day|date:"d-m-Y" }}
+                            <br>
+                        {% endfor %}
+                    </div>
+                    <div class="col-lg-3 col-mid-3 col-sm-3 col-3">
+                        <h4>Done</h4>
+                        <hr style="border-top: 0.01px solid rgb(119, 119, 119);">
+                        {% for score in scores %}
+                            {{ score }}
+                            <br>
+                        {% endfor %}
+                    </div>
+                    <div class="col-lg-5 col-mid-5 col-sm-5 col-5">
+                        <h4>Verdicts</h4>
+                        <hr style="border-top: 0.01px solid rgb(119, 119, 119);">
+                        {% for verdict in verdicts %}
+                            {% if verdict == 'Fantastic Day!' %}
+                                <strong style="color: rgb(1, 195, 1)">{{ verdict }}</strong>
+                            {% elif verdict == 'Nice Work!' %}
+                                <strong style="color: rgb(9, 141, 9)">{{ verdict }}</strong>
+                            {% elif verdict == 'Try Harder!' %}
+                                <strong style="color: rgb(199, 186, 8)">{{ verdict }}</strong>
+                            {% elif verdict == 'Do Better!' %}
+                                <strong style="color: rgb(197, 112, 0)">{{ verdict }}</strong>
+                            {% elif verdict == 'Are You Ok?' %}
+                                <strong style="color: rgb(251, 2, 2)">{{ verdict }}</strong>
+                            {% endif %}
+                            <br>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+                <h3>Your Progress graph</h3>
+                <p>...</p>
+                <p>...</p>
+                <p>...</p>
+                <p>...</p>
+                <p>...</p>
+                <p>...</p>
+
+
+                <form method="POST" class="form-progress" action="{% url 'progress' %}">
+                    {% csrf_token %}
+                    Check Another Month!
+                    <br>
+                    <input class="input-class" type="text" name="month" required placeholder="Month">
+                    <br>
+                    <input class="input-class" type="text" name="year" required placeholder="Year" >
+                    <br>
+                    <input class="btn btn btn-outline-light" type="submit" value="Check" style="width: 275px">    
+                    <br>        
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}

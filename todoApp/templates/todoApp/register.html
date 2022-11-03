@@ -1,0 +1,24 @@
+{% extends "todoApp/layout.html" %}
+
+{% block body %}
+    <div class="form">
+        <h3>Register!</h3>
+        {% if message %}
+            <div class="message">{{ message }}</div>
+        {% endif %}
+        <form action="{% url 'register' %}" method="POST">
+            {% csrf_token %}
+            <input class="input-class" autofocus type="text" name="username" placeholder="Username" required>
+            <br>
+            <input class="input-class" type="email" name="email" placeholder="Email" required>
+            <br>
+            <input class="input-class" type="password" name="password" placeholder="Password" required>
+            <br>
+            <input class="input-class" type="password" name="confirmation" placeholder="Confirm Password" required>
+            <br>
+            <input style="width: 275px; margin: .25rem;" class="btn btn-outline-light" type="submit" value="Register">
+            <br>
+            Already own an account? <a href="{% url 'login' %}">Login</a> instead.
+        </form>
+    </div>
+{% endblock %}

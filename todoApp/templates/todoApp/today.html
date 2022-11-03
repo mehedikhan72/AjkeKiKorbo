@@ -1,0 +1,76 @@
+{% extends "todoApp/layout.html" %}
+
+{% block body %}
+    <div class="today-page">
+        <div class="row">
+            <div class="col-lg-11" style="margin-top: -15px; margin-bottom: -3px; text-align: center;">
+                {% if tasks %}
+                    <h2>Hello, {{ request.user }}! Here are the tasks you need to complete today!</h2>
+                {% else %}
+                    <h2>Hello, {{ request.user }}! You have not added any tasks yet. Add some and get the grind going!</h2>
+                {% endif %}
+            </div>
+            <div class="col-lg-1">
+                <a><button id="add_task_btn" class="btn btn-sm btn-outline-light" style="margin-bottom: -10px"> Add Task <strong style="font-size: 1.2rem">+</strong></button></a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <h3>Pending Tasks <strong style="color: rgb(256, 196, 4)">[ {{ pending_tasks }}/{{ total_tasks }} ]</strong></h3>
+                <hr style="border-top: 0.01px solid rgb(119, 119, 119);">
+                {% for task in tasks %}
+                    <div class="row">
+                        {% if not task.completed %}
+                            <div class="col-lg-10">
+                                    {{ task.name }}
+                            </div>
+                        {% endif %}
+                        {% if not task.completed %}
+                            <div class="col-lg-2">
+                                <a href="{% url 'delete_task' task.id 'today' %}" class="btn btn-sm btn-outline-danger"> <i class="fa fa-solid fa-trash" style="font-size: 16px"></i></a> <a href="{% url 'complete_task' task.id %}" class="btn btn-sm btn-outline-warning"><i class="fa fa-check"></i></a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if not task.completed %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="col-lg-6" >
+                <h3>Completed tasks <strong style="color: rgb(48,164,68)">[ {{ completed_tasks }}/{{ total_tasks }} ]</strong></h3>
+                <hr style="border-top: 0.01px solid rgb(119, 119, 119);">
+                {% for task in tasks %}
+                    <div class="row">
+                        {% if task.completed %}
+                            <div class="col-lg-11">
+                                    {{ task.name }}
+                            </div>
+                        {% endif %}
+                        {% if task.completed %}
+                            <div class="col-lg-1">
+                                <button id="{{task.id}}" type="button" class="btn btn-sm btn-outline-success"><i class="fa fa-check"></i></button>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% if task.completed %}
+                        <br>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div id="add_pop_up" class="add_task_today add_task_hidden">
+            <strong style="padding: 0.4rem;">Add a Task!!</strong> <button class="btn btn-sm btn-outline-light" style="float: right" id="cancel_add_task_btn">Cancel</button>
+            <br>
+        <form class="center" action="{% url 'add_task' 'today' %}" method="POST">
+            {% csrf_token %}
+            <input class="input-class" id="task_name" type="text" name="task" placeholder="Task" required>
+            <br>
+            <input class="input-class" id="task_imp" type="number" name="importance" placeholder="Importance" required min="1" max="5">
+            <br>
+            <button class="btn btn-sm btn-outline-light" id="save_add_task_btn" name="save" action="{% url 'add_task' 'today' %}" value="save" style="width: 273px; margin: .25rem">Save</button>
+        </form>
+    </div>
+    
+{% endblock %}
