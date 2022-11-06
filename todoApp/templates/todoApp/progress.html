@@ -4,7 +4,7 @@
     {% if not existing_days %}
 
         <div class="alert alert-warning" role="alert" style="text-align: center;">
-            Oops, {{ request.user }}! Looks like you've never used this app in that month. Try another one!
+            Oops, {{ request.user }}! Looks like you've never used this app in the following month. Try another one!
         </div>
         <br>
         <form method="POST" class="form-progress" action="{% url 'progress' %}">
@@ -60,27 +60,53 @@
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-                <h3>Your Progress graph</h3>
-                <p>...</p>
-                <p>...</p>
-                <p>...</p>
-                <p>...</p>
-                <p>...</p>
-                <p>...</p>
+                <h3 style="text-align: center">Your Progress graph this month!</h3>
+                <div>
+                    <canvas id="myChart" height="180" ></canvas>
+                    <script>
+                    const ctx = document.getElementById('myChart').getContext('2d');
+                    const myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: {{labels|safe}},
+                            datasets: [{
+                                label: 'Work Done In Percentage',
+                                data: {{complete_percentage|safe}},
+                                backgroundColor: {{bg_color|safe}},
+                                borderColor: {{border_color|safe}},
+                                color: [
+                                    '#FFFFFF',
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                    </script>
+                </div>
+                <br>
+                <div>
+                    <form method="POST" class="form-progress" action="{% url 'progress' %}">
+                        {% csrf_token %}
+                        Check Another Month!
+                        <br>
+                        <input class="input-class" type="text" name="month" required placeholder="Month">
+                        <br>
+                        <input class="input-class" type="text" name="year" required placeholder="Year" >
+                        <br>
+                        <input class="btn btn btn-outline-light" type="submit" value="Check" style="width: 275px">    
+                        <br>        
+                    </form>
+                </div>
 
-
-                <form method="POST" class="form-progress" action="{% url 'progress' %}">
-                    {% csrf_token %}
-                    Check Another Month!
-                    <br>
-                    <input class="input-class" type="text" name="month" required placeholder="Month">
-                    <br>
-                    <input class="input-class" type="text" name="year" required placeholder="Year" >
-                    <br>
-                    <input class="btn btn btn-outline-light" type="submit" value="Check" style="width: 275px">    
-                    <br>        
-                </form>
             </div>
         </div>
     {% endif %}

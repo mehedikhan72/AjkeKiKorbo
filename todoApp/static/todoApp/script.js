@@ -17,9 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelector("#cancel_add_task_btn").addEventListener('click', function() {
         task_name = document.getElementById('task_name');
-        task_imp = document.getElementById('task_imp');
         task_name.value = ""
-        task_imp.value = "";
 
         add_menu = document.getElementById('add_pop_up');
         add_menu.classList.add("add_task_hidden");
@@ -39,9 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
         add_menu = document.getElementById('add_pop_up');
 
         task_name = document.getElementById('task_name');
-        task_imp = document.getElementById('task_imp');
 
-        if(task_name !== None && task_imp !== None){
+        if(task_name !== None){
             add_menu.classList.add("add_task_hidden");
             add_menu.classList.remove("add_task_shown");
         }

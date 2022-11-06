@@ -1,0 +1,46 @@
+{% extends "todoApp/layout.html" %}
+
+{% block body %}
+<div class="today-page">
+    <div class="row"> 
+        <br>
+        <div class="col-lg-11 col-md-10 col-sm-10 col-9" style="margin-top: -15px; margin-bottom: -3px; text-align: center;">
+            {% if reminders %}
+                <h3>{{ request.user }}! Have a look at the reminders you set for yourself. We take the responsibility
+                    of showing you these reminders randomly throughout this application!
+                </h3>
+            {% else %}
+                <h3>{{ request.user }}! Improve your day by adding reminders to yourself and we take the responsibility
+                    of showing you those reminders randomly throughout this application!
+                </h3>
+            {% endif %}
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-2 col-3" style="text-align: center">
+            <a><button id="add_task_btn" class="btn btn-sm btn-outline-light" style="margin-bottom: -10px"> Add <strong style="font-size: 1.2rem">+</strong></button></a>
+        </div>
+    </div>
+    <br>
+    {% for reminder in reminders %}
+    <div class="row">
+        <div class="col-lg-11 col-md-11 col-sm-10 col-10">
+            {{ reminder.name }}
+        </div>
+        <div class="col-lg-1 col-md-1 col-sm-2 col-2" style="text-align: center">
+            <a href="{% url 'delete_reminder' reminder.id %}" class="btn btn-sm btn-outline-danger"> <i class="fa fa-solid fa-trash" style="font-size: 16px"></i></a> 
+        </div>
+    </div>
+    <br>
+    {% endfor %}
+</div>
+
+<div id="add_pop_up" class="add_task_today add_task_hidden">
+        <strong style="padding: 0.4rem;">Add a Reminder!!</strong> <button class="btn btn-sm btn-outline-light" style="float: right" id="cancel_add_task_btn">Cancel</button>
+        <br>
+    <form class="center" action="{% url 'reminder' %}" method="POST">
+        {% csrf_token %}
+        <input class="input-class" id="task_name" type="text" name="reminder" placeholder="Reminder" required>
+        <br>
+        <input type="submit" class="btn btn-sm btn-outline-light" id="save_add_task_btn" name="save" value="save" style="width: 273px; margin: .25rem" placeholder="Save">
+    </form>
+</div>
+{% endblock %}

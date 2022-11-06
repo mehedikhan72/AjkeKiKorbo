@@ -3,37 +3,41 @@
 {% block body %}
 <div class="today-page">
     <div class="row">
-        <div class="col-lg-11" style="margin-top: -15px; margin-bottom: -3px; text-align: center;">
+        <div class="col-lg-11 col-md-10 col-sm-10 col-9" style="margin-top: -15px; margin-bottom: -3px; text-align: center;">
             {% if tasks %}
                 <h2>Hello, {{ request.user }}! Here are the tasks you need to complete tomorrow!</h2>
             {% else %}
                 <h2>Welcome Back, {{ request.user }}! Add some tasks and start planning the next day.</h2>
             {% endif %}
         </div>
-        <div class="col-lg-1">
-            <a><button id="add_task_btn" class="btn btn-sm btn-outline-light" style="margin-bottom: -10px"> Add Task <strong style="font-size: 1.2rem">+</strong></button></a>
+        <div class="col-lg-1 col-md-2 col-sm-2 col-3" style="text-align:right">
+            <a><button id="add_task_btn" class="btn btn-sm btn-outline-light" style="margin-bottom: -10px"> Add <strong style="font-size: 1.2rem">+</strong></button></a>
         </div>
     </div>
     <br>
-    {% for task in tasks %}
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="row">
-                    <div class="col-lg-11">
-                        {{ task.name }}
-                    </div>
-                    <div class="col-lg-1">
-                        <a href="{% url 'delete_task' task.id 'tomorrow' %}" class="btn btn-sm btn-outline-danger"> <i class="fa fa-solid fa-trash" style="font-size: 16px"></i></a> 
-                    </div>
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
+            {% for task in tasks %}
+            <div class="row">
+                <div class="col-lg-11 col-md-10 col-sm-10 col-10">
+                    {{ task.name }}
                 </div>
+                <div class="col-lg-1 col-md-2 col-sm-2 col-2" style="text-align: right">
+                    <a href="{% url 'delete_task' task.id 'tomorrow' %}" class="btn btn-sm btn-outline-danger"> <i class="fa fa-solid fa-trash" style="font-size: 16px"></i></a> 
+                </div>
+                <br>
+                <br>
             </div>
-
-            <div class="col-lg-6">
-                
-            </div>
+            {% endfor %}
         </div>
         <br>
-    {% endfor %}
+        <div class="col-lg-6 col-md-6 col-sm-12 col-12" style="text-align:center">
+            {% if reminder %}
+                <strong >Random Reminder: {{ reminder }}</strong>
+                <br>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
 <div id="add_pop_up" class="add_task_today add_task_hidden">
@@ -42,8 +46,6 @@
         <form class="center" action="{% url 'add_task' 'tomorrow' %}" method="POST">
             {% csrf_token %}
             <input class="input-class" id="task_name" type="text" name="task" placeholder="Task" required>
-            <br>
-            <input class="input-class" id="task_imp" type="number" name="importance" placeholder="Importance" required min="1" max="5">
             <br>
             <button class="btn btn-sm btn-outline-light" id="save_add_task_btn" name="save" action="{% url 'add_task' 'tomorrow' %}" value="save" style="width: 273px; margin: .25rem">Save</button>
         </form>

@@ -5,8 +5,9 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from . models import User, Task
+from . models import User, Task, Reminder
 import datetime, calendar
+import random
 
 # Create your views here.
 
@@ -18,17 +19,29 @@ def index(request):
 def today(request):
     user = request.user
     current_date = datetime.date.today()
-    tasks = Task.objects.filter(creator=user, time=current_date).values().order_by('-importance')
+    tasks = Task.objects.filter(creator=user, time=current_date).values()
 
     total_tasks = tasks.count()
     pending_tasks = Task.objects.filter(creator=user, time=current_date, completed=False).count()
     completed_tasks = total_tasks - pending_tasks
 
+    rem = Reminder.objects.filter(creator=user).values()
+    rem_list = []
+    if rem:
+        for r in rem:
+            rem_list.append(r["name"])
+
+        temp = random.randint(0, len(rem_list) - 1)
+        sent_reminder = rem_list[temp]
+    else:
+        sent_reminder = None
+    
     return render(request, "todoApp/today.html", {
         "tasks" : tasks,
         "total_tasks" : total_tasks,
         "pending_tasks" : pending_tasks,
         "completed_tasks" : completed_tasks,
+        "reminder" : sent_reminder,
     })
 
 @login_required
@@ -36,10 +49,24 @@ def tomorrow(request):
     user = request.user
     current_date = datetime.date.today()
     tomorrow_date = current_date + datetime.timedelta(1)
-    tasks = Task.objects.filter(creator=user, time=tomorrow_date).values().order_by('-importance')
+    tasks = Task.objects.filter(creator=user, time=tomorrow_date).values()
 
+    rem = Reminder.objects.filter(creator=user).values()
+    rem_list = []
+
+    if rem:
+        for r in rem:
+            rem_list.append(r["name"])
+
+        temp = random.randint(0, len(rem_list) - 1)
+        sent_reminder = rem_list[temp]
+    else:
+        sent_reminder = None
+        
     return render(request, "todoApp/tomorrow.html", {
-        "tasks" : tasks
+        "tasks" : tasks,
+        "reminder" : sent_reminder,
+
     })
 
 
@@ -47,14 +74,13 @@ def tomorrow(request):
 def add_task(request, day):
     if request.method == 'POST':
         task = request.POST["task"]
-        importance = request.POST["importance"]
         creator = str(request.user)
         if day == 'today':
             time = datetime.date.today()
         elif day == 'tomorrow':
             time = datetime.date.today() + datetime.timedelta(1)
 
-        new_task = Task.objects.create(name=task, creator=creator, time=time, importance=importance)   
+        new_task = Task.objects.create(name=task, creator=creator, time=time)   
         new_task.save() 
 
         # if request.POST["save"] == 'save_add_another':
@@ -108,14 +134,19 @@ def progress(request):
     num_days = calendar.monthrange(current_year, current_month)[1]
     this_month = [datetime.date(current_year, current_month, day) for day in range(1, num_days + 1)]
 
+    tomorrow = current_date + datetime.timedelta(1)
+
+    if current_date in this_month:
+        this_month.remove(current_date)
+    
+    if tomorrow in this_month:
+        this_month.remove(tomorrow)
+
     existing_days = []
     tasks = Task.objects.filter(creator=user, time__in=this_month).order_by('-id')
     for task in tasks:
         if task.time not in existing_days:
             existing_days.append(task.time)
-
-    if existing_days:
-        existing_days.remove(current_date)
 
     # Storing the total and completed count of this month(existing days) in the two following lists.
     total_tasks = []
@@ -130,29 +161,80 @@ def progress(request):
     for i in range(len(existing_days)):
         scores.append(str(completed_tasks[i]) + '/' + str(total_tasks[i]))
 
+
+    bg_color = []
+    border_color = []
     verdicts = []
+    complete_percentage = []
     for i in range(len(existing_days)):
         points = completed_tasks[i] / total_tasks[i]
+        complete_percentage.append(points * 100)
         if points >= 0.9:
             verdicts.append("Fantastic Day!")
+            bg_color.append("rgba(1, 195, 1, 0.2)")
+            border_color.append("rgba(1, 195, 1, 1)")
         
         elif points >= 0.75:
             verdicts.append("Nice Work!")
+            bg_color.append("rgba(9, 141, 9, 0.2)")
+            border_color.append("rgba(9, 141, 9, 1)")
 
         elif points >= 0.50:
             verdicts.append("Try Harder!")
+            bg_color.append("rgba(199, 186, 8, 0.2)")
+            border_color.append("rgba(199, 186, 8, 1)")
         
         elif points >= 0.25:
             verdicts.append("Do Better!")
+            bg_color.append("rgba(197, 112, 0, 0.2)")
+            border_color.append("rgba(197, 112, 0, 1)")
         
         else:
             verdicts.append("Are You Ok?")
+            bg_color.append("rgba(251, 2, 2, 0.2)")
+            border_color.append("rgba(251, 2, 2, 1)")
+
+    complete_percentage = complete_percentage[::-1]
+    bg_color = bg_color[::-1]
+    border_color = border_color[::-1]
+
+    labels = []
+    for d in existing_days:
+        d = str(d)
+        labels.append(d)
+
+    labels = labels[::-1]
 
     return render(request, "todoApp/progress.html", {
         "existing_days" : existing_days,
         "scores" : scores,
         "verdicts" : verdicts,
+        "complete_percentage" : complete_percentage,
+        "labels" : labels,
+        "bg_color" : bg_color,
+        "border_color" : border_color,
     })
+
+def reminder(request):
+    user = str(request.user)
+    if request.method == "POST":
+        name = request.POST["reminder"]
+
+        rem = Reminder.objects.create(name=name, creator=user)
+        rem.save()
+        return HttpResponseRedirect(reverse("reminder"))
+    
+    reminders = Reminder.objects.filter(creator=user)
+
+    return render(request, "todoApp/reminders.html", {
+        "reminders" : reminders,
+    })
+
+def delete_reminder(request, id):
+    rem = Reminder.objects.get(id=id)
+    rem.delete()
+
+    return HttpResponseRedirect(reverse("reminder"))
 
 def login_view(request):
     if request.method == "POST":

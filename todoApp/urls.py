@@ -11,5 +11,7 @@ urlpatterns = [
     path("complete_task/<int:id>", views.complete_task, name="complete_task"),
     path("delete_task/<int:id>/<str:day>", views.delete_task, name="delete_task"),
     path("tomorrow's-tasks", views.tomorrow, name="tomorrow"),
-    path("progress", views.progress, name="progress")
+    path("progress", views.progress, name="progress"),
+    path("reminders", views.reminder, name="reminder"),
+    path("delete_reminder/<int:id>", views.delete_reminder, name="delete_reminder")
 ]

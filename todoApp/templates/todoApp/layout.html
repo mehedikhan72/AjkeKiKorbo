@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <script src="{% static 'todoApp/script.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <title>AjkeKiKorbo!</title>
     </head>
 
@@ -36,7 +37,7 @@
                     <a class="nav-link" href="{% url 'tomorrow' %}">Set tomorrow's tasks</a>
                 </li>
                   <li class="nav-item active">
-                      <a class="nav-link" href="#">Reminders</a>
+                      <a class="nav-link" href="{% url 'reminder' %}">Reminders</a>
                   </li>
                   <li class="nav-item active">
                       <a class="nav-link" href="{% url 'progress' %}">Progress</a>
@@ -59,7 +60,7 @@
             </form> -->
           </div>
         </nav>
-        <hr style="border-top: 3px solid rgb(255, 255, 255);">
+        <br>
       </div>
       <div>
         {% block body %}

@@ -1,7 +1,18 @@
 .body {
     color: white;
-    background-color: rgba(52,58,64,255);
+    /* background-color: rgba(52,58,64,255); */
+    background-color: rgb(27, 27, 27);
     padding: .75rem;
+}
+
+.each_div {
+    border-radius: 10px;
+    background-color: rgba(52,58,64,255);
+    padding-left: 15px;
+}
+
+.navbar-dark {
+    background-color: rgb(27, 27, 27) !important;
 }
 
 .today-page {

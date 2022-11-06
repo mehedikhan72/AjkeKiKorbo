@@ -13,7 +13,11 @@ class Task(models.Model):
     name = models.TextField(max_length=256)
     creator = models.CharField(max_length=64, null=True, blank=True)
     time = models.DateField(default=datetime.date.today())
-    importance = models.PositiveIntegerField(default=3)
     completed = models.BooleanField(default=False)
+
+class Reminder(models.Model):
+    name = models.TextField(max_length=512)
+    creator = models.CharField(max_length=64, null=True, blank=True)
+    time = models.DateField(default=datetime.date.today())
 
 
