@@ -5,9 +5,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
-from . models import User, Task, Reminder
+from . models import User, Task, Reminder, Review
 import datetime, calendar
 import random
+import json
 
 # Create your views here.
 
@@ -235,6 +236,25 @@ def delete_reminder(request, id):
     rem.delete()
 
     return HttpResponseRedirect(reverse("reminder"))
+
+def details(request, date):
+    user = request.user
+    tasks = Task.objects.filter(creator=user, time=date).values()
+
+    return render(request, "todoApp/details.html", {
+        "tasks" : tasks,
+        "date" : date,
+    })
+
+def add_review(request):
+    user = str(request.user)
+    rev = json.load(request)["review"]
+    print(rev)
+    
+    review = Review.objects.create(rev=rev, creator=user)
+    review.save()
+
+    return HttpResponse("review added!")
 
 def login_view(request):
     if request.method == "POST":

@@ -28,7 +28,7 @@
                         <h4>Days</h4>
                         <hr style="border-top: 0.01px solid rgb(119, 119, 119);">
                         {% for day in existing_days %}
-                            {{ day|date:"d-m-Y" }}
+                        <a href="{% url 'details'  day|date:"Y-m-d"  %}">{{ day|date:"d-m-Y" }}</a>
                             <br>
                         {% endfor %}
                     </div>

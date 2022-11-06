@@ -1,0 +1,33 @@
+{% extends "todoApp/layout.html" %}
+
+{% block body %}
+    {% if tasks %}
+        <h3 style="text-align: center">Hey, {{ request.user }}! These were your tasks on {{ date }}</h3>
+        <br>
+    {% else %}
+        <h3 style="text-align: center">Hey, {{ request.user }}! Seems like you had no task on {{ date }}</h3>
+        <br>
+    {% endif %}
+
+    {% for task in tasks %}
+        <div class="row justify-content-md-center">
+            <div class="col col-lg-3 col-md-10 col-sm-10 col-10">
+                {{ task.name }}
+            </div>
+            <div class="col col-lg-3 col-md-2 col-sm-2 col-2" style="text-align: right;">
+                {% if task.completed %}
+                    <button class="btn btn-sm btn-outline-success"><i class="fa fa-check"></i></button>
+                {% else %}
+                    <button class="btn btn-sm btn-outline-danger"><i class="fa fa-check"></i></button>
+                {% endif %}
+            </div>
+        </div>
+        <br>
+    {% endfor %}
+    <br>
+    <div style="text-align: center">
+        <a class="btn btn-outline-light" href="{% url 'progress' %}">Go Back</a>
+    </div>
+    <br>
+
+{% endblock %}

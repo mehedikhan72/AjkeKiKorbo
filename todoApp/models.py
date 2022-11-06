@@ -20,4 +20,9 @@ class Reminder(models.Model):
     creator = models.CharField(max_length=64, null=True, blank=True)
     time = models.DateField(default=datetime.date.today())
 
+class Review(models.Model):
+    rev = models.TextField(max_length=10000)
+    creator = models.CharField(max_length=64, null=True, blank=True)
+    time = models.DateField(default=datetime.date.today())
+
 

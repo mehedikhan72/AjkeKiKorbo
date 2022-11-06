@@ -13,5 +13,7 @@ urlpatterns = [
     path("tomorrow's-tasks", views.tomorrow, name="tomorrow"),
     path("progress", views.progress, name="progress"),
     path("reminders", views.reminder, name="reminder"),
-    path("delete_reminder/<int:id>", views.delete_reminder, name="delete_reminder")
+    path("delete_reminder/<int:id>", views.delete_reminder, name="delete_reminder"),
+    path("details/<str:date>", views.details, name="details"),
+    path("add_review", views.add_review, name="add_review"),
 ]
