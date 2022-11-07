@@ -118,3 +118,50 @@
 .review_div_shown {
     display: block;
 }
+
+/* .review_taken_div {
+    color: green;
+    border: 3px solid green;
+    height: fit-content;
+    background-color: rgb(27, 27, 27);
+    border-radius: 10px;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 2rem;
+    margin: 1rem;
+    font-weight: bold;
+} */
+
+.review_taken_div {
+    height: fit-content;
+    position: fixed;
+    top: 0;
+    right: 0;
+    margin: 1rem;
+}
+
+@keyframes donno {
+    0% {
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 1;
+    }
+    
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+#review_taken {
+    animation-name: donno;
+    animation-duration: 5s;
+    animation-fill-mode: forwards;
+    animation-play-state: paused;
+}

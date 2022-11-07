@@ -80,8 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 review_menu.classList.add("review_div_hidden");
                 review_menu.classList.remove("review_div_shown");
                 rev_name.value = "";
+                enable_view();
+
+                
+                document.getElementById("review_taken").style.animationPlayState = 'running';
             })
-            enable_view();
         }
     });
 })

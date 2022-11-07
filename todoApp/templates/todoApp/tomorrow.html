@@ -8,6 +8,11 @@
                 <h2>Hello, {{ request.user }}! Here are the tasks you need to complete tomorrow!</h2>
             {% else %}
                 <h2>Welcome Back, {{ request.user }}! Add some tasks and start planning the next day.</h2>
+                <br>
+                {% if reminder %}
+                    <strong >Random Reminder: {{ reminder }}</strong>
+                    <br>
+                {% endif %}
             {% endif %}
         </div>
         <div class="col-lg-1 col-md-2 col-sm-2 col-3" style="text-align:right">
@@ -32,7 +37,7 @@
         </div>
         <br>
         <div class="col-lg-6 col-md-6 col-sm-12 col-12" style="text-align:center">
-            {% if reminder %}
+            {% if reminder and tasks %}
                 <strong >Random Reminder: {{ reminder }}</strong>
                 <br>
             {% endif %}
