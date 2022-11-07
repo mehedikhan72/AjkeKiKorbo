@@ -9,6 +9,8 @@ from . models import User, Task, Reminder, Review
 import datetime, calendar
 import random
 import json
+from django.core.mail import send_mail
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 
@@ -36,6 +38,8 @@ def today(request):
         sent_reminder = rem_list[temp]
     else:
         sent_reminder = None
+
+    # Sending email if user has not schedule tasks for the next day and it's already 11 PM.
     
     return render(request, "todoApp/today.html", {
         "tasks" : tasks,
@@ -81,15 +85,15 @@ def add_task(request, day):
         elif day == 'tomorrow':
             time = datetime.date.today() + datetime.timedelta(1)
 
+        if not task:
+            return render(request, "todoApp/error.html", {
+                "message" : "Task must not be empty!"
+            })
+
         new_task = Task.objects.create(name=task, creator=creator, time=time)   
         new_task.save() 
 
-        # if request.POST["save"] == 'save_add_another':
-        #     return render(request, "todoApp/add_task.html", {
-        #         "day" : day,
-        #     })
 
-        # elif request.POST["save"] == 'save':
         if day == 'today':
             return HttpResponseRedirect(reverse("today"))
         elif day == 'tomorrow':
@@ -123,8 +127,18 @@ def delete_task(request, id, day):
 def progress(request):
     current_date = datetime.date.today()
     if request.method == "POST":
-        current_month = int(request.POST["month"])
-        current_year = int(request.POST["year"])
+        try:
+            current_month = int(request.POST["month"])
+            current_year = int(request.POST["year"])
+        except ValueError:
+            return render(request, "todoApp/error.html", {
+                "message" : "Please enter valid data!"
+            })           
+
+        if current_month > 12 or current_month < 1:
+            return render(request, "todoApp/error.html", {
+                "message" : "Please enter a valid month[From 1 to 12]!"
+            })
 
     else:
         current_month = current_date.month
@@ -221,6 +235,11 @@ def reminder(request):
     if request.method == "POST":
         name = request.POST["reminder"]
 
+        if not name:
+            return render(request, "todoApp/error.html", {
+                "message" : "Reminder must not be empty!"
+            })
+
         rem = Reminder.objects.create(name=name, creator=user)
         rem.save()
         return HttpResponseRedirect(reverse("reminder"))
@@ -239,7 +258,12 @@ def delete_reminder(request, id):
 
 def details(request, date):
     user = request.user
-    tasks = Task.objects.filter(creator=user, time=date).values()
+    try:
+        tasks = Task.objects.filter(creator=user, time=date).values()
+    except ValidationError:
+            return render(request, "todoApp/error.html", {
+                "message" : "Page Not Found!"
+            })
 
     return render(request, "todoApp/details.html", {
         "tasks" : tasks,
@@ -249,8 +273,12 @@ def details(request, date):
 def add_review(request):
     user = str(request.user)
     rev = json.load(request)["review"]
-    print(rev)
-    
+
+    if not rev:
+        return render(request, "todoApp/error.html", {
+            "message" : "Review must not be empty!"
+        })
+
     review = Review.objects.create(rev=rev, creator=user)
     review.save()
 

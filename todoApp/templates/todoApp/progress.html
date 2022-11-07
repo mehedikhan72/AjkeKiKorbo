@@ -98,9 +98,9 @@
                         {% csrf_token %}
                         Check Another Month!
                         <br>
-                        <input class="input-class" type="text" name="month" required placeholder="Month">
+                        <input class="input-class" type="number" name="month" required placeholder="Month" min="1" max="12">
                         <br>
-                        <input class="input-class" type="text" name="year" required placeholder="Year" >
+                        <input class="input-class" type="number" name="year" required placeholder="Year" min="2022">
                         <br>
                         <input class="btn btn btn-outline-light" type="submit" value="Check" style="width: 275px">    
                         <br>        
