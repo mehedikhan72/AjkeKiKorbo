@@ -164,4 +164,5 @@
     animation-duration: 5s;
     animation-fill-mode: forwards;
     animation-play-state: paused;
+    animation-iteration-count: infinite;
 }

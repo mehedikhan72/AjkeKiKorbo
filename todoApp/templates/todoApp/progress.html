@@ -19,7 +19,14 @@
             <br>        
         </form>
     {% else %}
-        <h3 style="text-align: center">Hello, {{ request.user }}! Here's how you've been doing this month!</h3>
+        <div style="text-align: center">
+            <h3>Hello, {{ request.user }}! Here's how you've been doing this month!</h3>
+            {% if reminder %}
+                <strong >Random Reminder: {{ reminder }}</strong>
+                <br>
+                <br>
+            {% endif %}
+        </div>
 
         <div class="row">
             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
@@ -64,7 +71,7 @@
             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                 <h3 style="text-align: center">Your Progress graph this month!</h3>
                 <div>
-                    <canvas id="myChart" height="180" ></canvas>
+                    <canvas id="myChart" height="165" ></canvas>
                     <script>
                     const ctx = document.getElementById('myChart').getContext('2d');
                     const myChart = new Chart(ctx, {

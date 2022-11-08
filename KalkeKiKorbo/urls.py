@@ -20,3 +20,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include("todoApp.urls")),
 ]
+
+handler404 = "KalkeKiKorbo.views.page_not_found_view"

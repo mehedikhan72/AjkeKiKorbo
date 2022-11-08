@@ -82,8 +82,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 rev_name.value = "";
                 enable_view();
 
-                
                 document.getElementById("review_taken").style.animationPlayState = 'running';
+                document.getElementById("review_taken").addEventListener('animationiteration', function() {
+                    document.getElementById("review_taken").style.animationPlayState = 'paused';
+                })
+
             })
         }
     });

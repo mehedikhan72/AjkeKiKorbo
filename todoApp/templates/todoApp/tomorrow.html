@@ -8,41 +8,32 @@
                 <h2>Hello, {{ request.user }}! Here are the tasks you need to complete tomorrow!</h2>
             {% else %}
                 <h2>Welcome Back, {{ request.user }}! Add some tasks and start planning the next day.</h2>
-                <br>
-                {% if reminder %}
-                    <strong >Random Reminder: {{ reminder }}</strong>
-                    <br>
-                {% endif %}
             {% endif %}
+            
+            {% if reminder %}
+            <strong >Random Reminder: {{ reminder }}</strong>
+            <br>
+            <br>
+            {% endif %}
+
         </div>
         <div class="col-lg-1 col-md-2 col-sm-2 col-3" style="text-align:right">
-            <a><button id="add_task_btn" class="btn btn-sm btn-outline-light" style="margin-bottom: -10px"> Add <strong style="font-size: 1.2rem">+</strong></button></a>
+            <a><button id="add_task_btn" class="btn btn-sm btn-outline-light" style="margin-bottom: -10px"> ADD <strong style="font-size: 1.2rem">+</strong></button></a>
+        </div>
+    </div>
+
+    {% for task in tasks %}
+    <div class="row justify-content-md-center">
+        <div class="col col-lg-3 col-md-10 col-sm-10 col-10">
+            {{ task.name }}
+        </div>
+        <div class="col col-lg-3 col-md-2 col-sm-2 col-2" style="text-align: right;">
+            <a href="{% url 'delete_task' task.id 'tomorrow' %}" class="btn btn-sm btn-outline-danger"> <i class="fa fa-solid fa-trash" style="font-size: 16px"></i></a> 
         </div>
     </div>
     <br>
-    <div class="row">
-        <div class="col-lg-6 col-md-6 col-sm-12 col-12">
-            {% for task in tasks %}
-            <div class="row">
-                <div class="col-lg-11 col-md-10 col-sm-10 col-10">
-                    {{ task.name }}
-                </div>
-                <div class="col-lg-1 col-md-2 col-sm-2 col-2" style="text-align: right">
-                    <a href="{% url 'delete_task' task.id 'tomorrow' %}" class="btn btn-sm btn-outline-danger"> <i class="fa fa-solid fa-trash" style="font-size: 16px"></i></a> 
-                </div>
-                <br>
-                <br>
-            </div>
-            {% endfor %}
-        </div>
-        <br>
-        <div class="col-lg-6 col-md-6 col-sm-12 col-12" style="text-align:center">
-            {% if reminder and tasks %}
-                <strong >Random Reminder: {{ reminder }}</strong>
-                <br>
-            {% endif %}
-        </div>
-    </div>
+    {% endfor %}
+
 </div>
 
 <div id="add_pop_up" class="add_task_today add_task_hidden">

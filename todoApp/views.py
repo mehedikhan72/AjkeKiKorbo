@@ -17,7 +17,6 @@ from django.core.exceptions import ValidationError
 def index(request):
     return render(request, "todoApp/index.html")
     
-
 @login_required
 def today(request):
     user = request.user
@@ -39,6 +38,16 @@ def today(request):
     else:
         sent_reminder = None
 
+    # Getting yesterdays unfinished tasks!
+    yesterday = current_date - datetime.timedelta(1)
+    yesterday_tasks = Task.objects.filter(creator=user, time=yesterday).values()
+
+    yesterday_total_tasks = yesterday_tasks.count()
+    yesterday_pending_tasks = Task.objects.filter(creator=user, time=yesterday, completed=False).count()
+    yesterday_completed_tasks = yesterday_total_tasks - yesterday_pending_tasks
+ 
+    yesterday_completion_percentagee = round((yesterday_completed_tasks / yesterday_total_tasks) * 100)
+
     # Sending email if user has not schedule tasks for the next day and it's already 11 PM.
     
     return render(request, "todoApp/today.html", {
@@ -47,7 +56,9 @@ def today(request):
         "pending_tasks" : pending_tasks,
         "completed_tasks" : completed_tasks,
         "reminder" : sent_reminder,
-    })
+        "yesterday_tasks" : yesterday_tasks,
+        "yesterday_completion_percentage" : yesterday_completion_percentagee
+    })    
 
 @login_required
 def tomorrow(request):
@@ -220,6 +231,17 @@ def progress(request):
 
     labels = labels[::-1]
 
+    rem = Reminder.objects.filter(creator=user).values()
+    rem_list = []
+    if rem:
+        for r in rem:
+            rem_list.append(r["name"])
+
+        temp = random.randint(0, len(rem_list) - 1)
+        sent_reminder = rem_list[temp]
+    else:
+        sent_reminder = None
+
     return render(request, "todoApp/progress.html", {
         "existing_days" : existing_days,
         "scores" : scores,
@@ -228,6 +250,7 @@ def progress(request):
         "labels" : labels,
         "bg_color" : bg_color,
         "border_color" : border_color,
+        "reminder" : sent_reminder,
     })
 
 def reminder(request):
@@ -251,8 +274,8 @@ def reminder(request):
     })
 
 def delete_reminder(request, id):
-    rem = Reminder.objects.get(id=id)
-    rem.delete()
+    ajke_rubaiyat_er_bday = Reminder.objects.get(id=id)
+    ajke_rubaiyat_er_bday.delete()
 
     return HttpResponseRedirect(reverse("reminder"))
 
