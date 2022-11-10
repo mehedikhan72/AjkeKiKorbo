@@ -33,7 +33,7 @@
             {% if request.user.is_authenticated %}
                 <button id="add_review_btn" class="btn btn-outline-light">Leave a review</button>
             {% else %}
-                <a href="{% url 'login' %}">Login</a> to leave a review.
+                <a style="color:rgb(51,102,204)" href="{% url 'login' %}">Login</a> to leave a review.
             {% endif %}
         </div>
         <br>

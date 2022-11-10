@@ -21,11 +21,11 @@
     </div>
     <br>
     {% for reminder in reminders %}
-    <div class="row">
-        <div class="col-lg-11 col-md-11 col-sm-10 col-10">
+    <div class="row justify-content-md-center">
+        <div class="col col-lg-4 col-md-10 col-sm-10 col-10">
             {{ reminder.name }}
         </div>
-        <div class="col-lg-1 col-md-1 col-sm-2 col-2" style="text-align: center">
+        <div class="col col-lg-4 col-md-2 col-sm-2 col-2" style="text-align: right">
             <a href="{% url 'delete_reminder' reminder.id %}" class="btn btn-sm btn-outline-danger"> <i class="fa fa-solid fa-trash" style="font-size: 16px"></i></a> 
         </div>
     </div>

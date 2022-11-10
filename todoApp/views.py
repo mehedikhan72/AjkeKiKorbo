@@ -42,11 +42,14 @@ def today(request):
     yesterday = current_date - datetime.timedelta(1)
     yesterday_tasks = Task.objects.filter(creator=user, time=yesterday).values()
 
-    yesterday_total_tasks = yesterday_tasks.count()
-    yesterday_pending_tasks = Task.objects.filter(creator=user, time=yesterday, completed=False).count()
-    yesterday_completed_tasks = yesterday_total_tasks - yesterday_pending_tasks
- 
-    yesterday_completion_percentagee = round((yesterday_completed_tasks / yesterday_total_tasks) * 100)
+    if yesterday_tasks:
+        yesterday_total_tasks = yesterday_tasks.count()
+        yesterday_pending_tasks = Task.objects.filter(creator=user, time=yesterday, completed=False).count()
+        yesterday_completed_tasks = yesterday_total_tasks - yesterday_pending_tasks
+    
+        yesterday_completion_percentagee = round((yesterday_completed_tasks / yesterday_total_tasks) * 100)
+    else:
+        yesterday_completion_percentagee = None
 
     # Sending email if user has not schedule tasks for the next day and it's already 11 PM.
     
@@ -118,7 +121,6 @@ def add_task(request, day):
 @login_required
 def complete_task(request, id):
     task = Task.objects.get(id=id)
-    print(task)
     task.completed = True
     task.save()
 
@@ -354,6 +356,13 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
+        # Send mail to user
+        subject = "Welcome text for registration."
+        message = "Thank you for registering to 'AjkeKiKorbo'. We hope you find this web application useful in your day to day life. Feel free to contact us via the review section in the app's homepage or this email. Happy Grinding!"
+        sender = 'ajkekikorbo0@gmail.com'
+        recipient = [ user.email ]
+
+        send_mail(subject, message, sender, recipient, fail_silently=False)
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "todoApp/register.html")

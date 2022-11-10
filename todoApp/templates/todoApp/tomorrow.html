@@ -13,8 +13,8 @@
             {% if reminder %}
             <strong >Random Reminder: {{ reminder }}</strong>
             <br>
-            <br>
             {% endif %}
+            <br>
 
         </div>
         <div class="col-lg-1 col-md-2 col-sm-2 col-3" style="text-align:right">
@@ -24,10 +24,10 @@
 
     {% for task in tasks %}
     <div class="row justify-content-md-center">
-        <div class="col col-lg-3 col-md-10 col-sm-10 col-10">
+        <div class="col col-lg-4 col-md-10 col-sm-10 col-10">
             {{ task.name }}
         </div>
-        <div class="col col-lg-3 col-md-2 col-sm-2 col-2" style="text-align: right;">
+        <div class="col col-lg-4 col-md-2 col-sm-2 col-2" style="text-align: right;">
             <a href="{% url 'delete_task' task.id 'tomorrow' %}" class="btn btn-sm btn-outline-danger"> <i class="fa fa-solid fa-trash" style="font-size: 16px"></i></a> 
         </div>
     </div>
