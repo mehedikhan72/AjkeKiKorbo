@@ -152,6 +152,11 @@ def progress(request):
             return render(request, "todoApp/error.html", {
                 "message" : "Please enter a valid month[From 1 to 12]!"
             })
+        
+        if current_year > 9999:
+            return render(request, "todoApp/error.html", {
+                "message" : "Did you time travel to the future or something?"
+            })
 
     else:
         current_month = current_date.month

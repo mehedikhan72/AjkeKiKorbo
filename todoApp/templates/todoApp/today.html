@@ -32,7 +32,7 @@
                 {% endif %}
                 {% if pending_tasks == 0 and completed_tasks != 0 %}
                     <div class="alert alert-success" role="alert" style="text-align: center;">
-                        GG, {{ request.user }}! Looks like you've mad it today! Chill a bit or add more tasks!!
+                        GG, {{ request.user }}! Looks like you've mad it today! Chill out or add more tasks!!
                     </div>
                 {% endif %}
                 {% for task in tasks %}
