@@ -97,7 +97,7 @@
 }
 
 .review_div {
-    width: 60%;
+    width: 70%;
     height: fit-content;
     position: fixed;
     margin: auto;
@@ -119,19 +119,6 @@
     display: block;
 }
 
-/* .review_taken_div {
-    color: green;
-    border: 3px solid green;
-    height: fit-content;
-    background-color: rgb(27, 27, 27);
-    border-radius: 10px;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    padding: 2rem;
-    margin: 1rem;
-    font-weight: bold;
-} */
 
 .review_taken_div {
     height: fit-content;

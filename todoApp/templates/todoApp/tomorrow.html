@@ -37,7 +37,7 @@
 </div>
 
 <div id="add_pop_up" class="add_task_today add_task_hidden">
-        <strong style="padding: 0.4rem;">Add a Task!!</strong> <button class="btn btn-sm btn-outline-light" style="float: right" id="cancel_add_task_btn">Cancel</button>
+        <strong style="padding: 0.4rem;">Add a Task!!</strong> <button class="btn btn-sm btn-outline-light" style="float: right; margin-right: 5px" id="cancel_add_task_btn">Cancel</button>
         <br>
         <form class="center" action="{% url 'add_task' 'tomorrow' %}" method="POST">
             {% csrf_token %}
