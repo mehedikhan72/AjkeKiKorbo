@@ -6,6 +6,8 @@
         {% if message %}
             <div class="message">{{ message }}</div>
         {% endif %}
+        {% load tz %}
+        {% get_current_timezone as TIME_ZONE %}
         <form action="{% url 'register' %}" method="POST">
             {% csrf_token %}
             <input class="input-class" autofocus type="text" name="username" placeholder="Username" required>
@@ -15,6 +17,22 @@
             <input class="input-class" type="password" name="password" placeholder="Password" required>
             <br>
             <input class="input-class" type="password" name="confirmation" placeholder="Confirm Password" required>
+            <br>
+
+            <div style="display: inline-block">   
+                <div class="alert alert-warning" role="alert" style="text-align: center; width: 275px">
+                    <span style="color: red; font-weight: 600">Warning! </span>Select the correct timezone of the region where you live.
+                </div>
+            </div> 
+            <br>
+
+
+            <label for="timezone">Time Zone:</label>
+            <select name="timezone" style="width: 182px; border-radius: 3px;" required>
+                {% for tz in timezones %}
+                <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected{% endif %}>{{ tz }}</option>
+                {% endfor %}
+            </select>
             <br>
             <input style="width: 275px; margin: .25rem;" class="btn btn-outline-light" type="submit" value="Register">
             <br>

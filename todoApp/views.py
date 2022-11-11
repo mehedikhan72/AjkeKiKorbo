@@ -11,6 +11,7 @@ import random
 import json
 from django.core.mail import send_mail
 from django.core.exceptions import ValidationError
+import pytz
 
 # Create your views here.
 
@@ -20,7 +21,8 @@ def index(request):
 @login_required
 def today(request):
     user = request.user
-    current_date = datetime.date.today()
+    current_date = datetime.datetime.now(pytz.timezone(user.time_zone)).date()
+    
     tasks = Task.objects.filter(creator=user, time=current_date).values()
 
     total_tasks = tasks.count()
@@ -66,7 +68,7 @@ def today(request):
 @login_required
 def tomorrow(request):
     user = request.user
-    current_date = datetime.date.today()
+    current_date = datetime.datetime.now(pytz.timezone(user.time_zone)).date()
     tomorrow_date = current_date + datetime.timedelta(1)
     tasks = Task.objects.filter(creator=user, time=tomorrow_date).values()
 
@@ -91,13 +93,14 @@ def tomorrow(request):
 
 @login_required
 def add_task(request, day):
+    user = request.user
     if request.method == 'POST':
         task = request.POST["task"]
         creator = str(request.user)
         if day == 'today':
-            time = datetime.date.today()
+            time = current_date = datetime.datetime.now(pytz.timezone(user.time_zone)).date()
         elif day == 'tomorrow':
-            time = datetime.date.today() + datetime.timedelta(1)
+            time = current_date = datetime.datetime.now(pytz.timezone(user.time_zone)).date() + datetime.timedelta(1)
 
         if not task:
             return render(request, "todoApp/error.html", {
@@ -138,7 +141,8 @@ def delete_task(request, id, day):
 
 @login_required
 def progress(request):
-    current_date = datetime.date.today()
+    user = request.user
+    current_date = current_date = datetime.datetime.now(pytz.timezone(user.time_zone)).date()
     if request.method == "POST":
         try:
             current_month = int(request.POST["month"])
@@ -161,8 +165,6 @@ def progress(request):
     else:
         current_month = current_date.month
         current_year = current_date.year
-
-    user = request.user
 
     num_days = calendar.monthrange(current_year, current_month)[1]
     this_month = [datetime.date(current_year, current_month, day) for day in range(1, num_days + 1)]
@@ -343,6 +345,8 @@ def register(request):
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]
+        time_zone = request.POST.get("timezone")
+        print(time_zone)
 
         # Ensure password matches confirmation
         password = request.POST["password"]
@@ -351,10 +355,15 @@ def register(request):
             return render(request, "todoApp/register.html", {
                 "message": "Passwords must match."
             })
+        
+        if not time_zone:
+            return render(request, "todoApp/register.html", {
+                "message": "Passwords enter a timezone."
+            })
 
         # Attempt to create new user
         try:
-            user = User.objects.create_user(username, email, password)
+            user = User.objects.create_user(username, email, password, time_zone=time_zone)
             user.save()
         except IntegrityError:
             return render(request, "todoApp/register.html", {
@@ -370,5 +379,7 @@ def register(request):
         send_mail(subject, message, sender, recipient, fail_silently=False)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "todoApp/register.html")
+        return render(request, "todoApp/register.html", {
+            'timezones' : pytz.common_timezones,
+        })
 
