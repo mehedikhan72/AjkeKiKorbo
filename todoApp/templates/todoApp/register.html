@@ -26,7 +26,6 @@
             </div> 
             <br>
 
-
             <label for="timezone">Time Zone:</label>
             <select name="timezone" style="width: 182px; border-radius: 3px;" required>
                 {% for tz in timezones %}
@@ -36,7 +35,7 @@
             <br>
             <input style="width: 275px; margin: .25rem;" class="btn btn-outline-light" type="submit" value="Register">
             <br>
-            Already own an account? <a href="{% url 'login' %}">Login</a> instead.
+            Already own an account? <a style="color:rgb(51,102,204)" href="{% url 'login' %}">Login</a> instead.
         </form>
     </div>
 {% endblock %}

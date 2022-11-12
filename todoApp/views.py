@@ -22,7 +22,7 @@ def index(request):
 def today(request):
     user = request.user
     current_date = datetime.datetime.now(pytz.timezone(user.time_zone)).date()
-    
+
     tasks = Task.objects.filter(creator=user, time=current_date).values()
 
     total_tasks = tasks.count()
@@ -87,9 +87,7 @@ def tomorrow(request):
     return render(request, "todoApp/tomorrow.html", {
         "tasks" : tasks,
         "reminder" : sent_reminder,
-
     })
-
 
 @login_required
 def add_task(request, day):
@@ -98,9 +96,9 @@ def add_task(request, day):
         task = request.POST["task"]
         creator = str(request.user)
         if day == 'today':
-            time = current_date = datetime.datetime.now(pytz.timezone(user.time_zone)).date()
+            time = datetime.datetime.now(pytz.timezone(user.time_zone)).date()
         elif day == 'tomorrow':
-            time = current_date = datetime.datetime.now(pytz.timezone(user.time_zone)).date() + datetime.timedelta(1)
+            time = datetime.datetime.now(pytz.timezone(user.time_zone)).date() + datetime.timedelta(1)
 
         if not task:
             return render(request, "todoApp/error.html", {
@@ -109,7 +107,6 @@ def add_task(request, day):
 
         new_task = Task.objects.create(name=task, creator=creator, time=time)   
         new_task.save() 
-
 
         if day == 'today':
             return HttpResponseRedirect(reverse("today"))
@@ -317,6 +314,7 @@ def add_review(request):
     return HttpResponse("review added!")
 
 def login_view(request):
+    logout(request)
     if request.method == "POST":
 
         # Attempt to sign user in
@@ -342,8 +340,13 @@ def logout_view(request):
 
 
 def register(request):
+    logout(request)
     if request.method == "POST":
         username = request.POST["username"]
+        if ' ' in username:
+            return render(request, "todoApp/register.html", {
+                "message": "Username cannot contain any spaces."
+            })
         email = request.POST["email"]
         time_zone = request.POST.get("timezone")
         print(time_zone)

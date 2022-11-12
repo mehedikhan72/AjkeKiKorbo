@@ -8,7 +8,6 @@ import datetime
 
 class User(AbstractUser):
     time_zone = models.CharField(max_length=128, blank=False, null=False, default="UTC")
-    pass
 
 class Task(models.Model):
     name = models.TextField(max_length=256)
